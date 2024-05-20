@@ -1,21 +1,53 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 class EmployeeController extends Controller
 {
     //
-    public function list_employees()
-    {  
+    public function list_employees() #READ
+    {
         #TODO:Search how to paginate this endpoint
-        try{        
+        try {
             $employees = Employee::all();
-            return response()->json($employees,200);
-        }catch(Exception $e){
+            return response()->json($employees, 200);
+        } catch (Exception $e) {
             return response()->json(['message' => 'Error when try to list all employees'], 500);
+        }
+    }
+    public function create_employee(Request $request) # CREATE
+    {
+        try{
+            $validator = Validator::make($request->all(),[
+                'name' => 'required|string',
+                'cpf' => 'required|string:11',
+                'email' => 'required|email',
+                'login' => 'required|string',
+                'password' => 'required|string',
+                'address' => 'required|string',
+            ]);    
+            $employees = Employee::create([
+                'name'=> $request->name,
+                'cpf'=> $request->cpf,
+                'email'=> $request->email,
+                'login'=> $request->login,
+                'password'=> $request->password,
+                'address'=> $request->address,
+            ]);
+            if($employees){
+                return response()->json(['message'=> 'Employee created successfully'],200);
+            }
+            else{
+                return response()->json(['message'=> 'Something went wrong'],500);
+            }
+        }
+        catch (Exception $e){
+            return response()->json(['message'=> $validator->errors()],422);
         }
     }
 }

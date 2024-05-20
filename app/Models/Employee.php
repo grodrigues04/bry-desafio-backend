@@ -1,5 +1,5 @@
 <?php
-
+#Model: control and interact with BD
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +14,7 @@ class Employee extends Model
     'email',
     'login',
     'password',
-    'addres',
+    'address',
     ];  
     use HasFactory;
 }

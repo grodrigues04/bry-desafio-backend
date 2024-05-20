@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/employees', [EmployeeController::class,'list_employees'])->name('');
+Route::post('/employees', [EmployeeController::class,'create_employee'])->name('');
