@@ -61,5 +61,20 @@ class EmployeeController extends Controller
             return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
         }
     }
+
+    public function employee_edit($id){
+        try{
+            $employee = Employee::find($id);
+            if($employee){
+                return response()->json(['status'=>200,'employee'=>$employee]);
+            } else {
+                return response()->json(['status'=> 404,'message'=>'employee not found']);
+            }
+        }
+        catch(Exception $e) {
+            return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
+        }
+    }
 }
+    
     

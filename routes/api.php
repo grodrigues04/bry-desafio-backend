@@ -11,3 +11,4 @@ Route::get('/user', function (Request $request) {
 Route::get('/employees', [EmployeeController::class,'list_employees'])->name('');
 Route::post('/employees', [EmployeeController::class,'create_employee'])->name('');
 Route::get('/employees/{id}', [EmployeeController::class,'employee_id'])->name('');
+Route::get('/employees/{id}/edit', [EmployeeController::class,'employee_edit'])->name('');
