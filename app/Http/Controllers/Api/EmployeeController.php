@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use Exception;
@@ -22,10 +23,10 @@ class EmployeeController extends Controller
     }
     public function create_employee(Request $request) # CREATE
     {
-        try{
-            $validator = Validator::make($request->all(),[
+        try {
+            $validator = Validator::make($request->all(),[  
                 'name' => 'required|string',
-                'cpf' => 'required|string:11',
+                'cpf' => 'required|string|size:11',
                 'email' => 'required|email',
                 'login' => 'required|string',
                 'password' => 'required|string',
@@ -42,12 +43,9 @@ class EmployeeController extends Controller
             if($employees){
                 return response()->json(['message'=> 'Employee created successfully'],200);
             }
-            else{
-                return response()->json(['message'=> 'Something went wrong'],500);
-            }
-        }
-        catch (Exception $e){
-            return response()->json(['message'=> $validator->errors()],422);
+        } catch (Exception $e) {
+            return response()->json(['status'=>500,'message'=> $validator->messages()]);
+        
         }
     }
 }
