@@ -44,7 +44,7 @@ class EmployeeController extends Controller
                 return response()->json(['message'=> 'Employee created successfully'],200);
             }
         } catch (Exception $e) {
-            return response()->json(['status'=>500,'message'=> $validator->messages()]);
+            return response()->json(['status'=>422,'message'=> $validator->messages()]);
         
         }
     }
