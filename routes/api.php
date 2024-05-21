@@ -22,3 +22,4 @@ Route::delete('employees/delete/{id}',[EmployeeController::class,'employee_delet
 Route::get('/companies', [CompanyController::class,'list_companies'])->name('');
 Route::post('/companies', [CompanyController::class,'create_company'])->name('');
 Route::get('/companies/{id}', [CompanyController::class,'company_id'])->name('');
+Route::patch('/companies/edit/{id}', [CompanyController::class, 'company_update'])->name('');

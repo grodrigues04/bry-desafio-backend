@@ -79,7 +79,7 @@ class EmployeeController extends Controller
             }
             $validatedData = $validator->validated();
             $employee->update($validatedData);
-            return response()->json(['status'=> 200,'message' => 'Resource updated successfully',"employee"=>$employee]);
+            return response()->json(['status'=> 200,'message' => 'employee updated successfully',"employee"=>$employee]);
         } else {
             return response()->json(['status'=> 404,'message'=>'employee not found']);
         };

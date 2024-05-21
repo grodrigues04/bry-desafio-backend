@@ -62,5 +62,28 @@ class CompanyController extends Controller
             return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
         }
     }
-        
+
+    public function company_update(Request $request, int $id){
+        try{
+            $company = Company::find($id);
+            if($company){
+                $validator = Validator::make($request->all(),[  
+                    'name' => 'sometimes|string',
+                    'cnpj' => 'sometimes|string',
+                    'address' => 'sometimes|string'
+                ]);    
+                if ($validator->fails()) {
+                    return response()->json(['status' => 422, 'message' => $validator->messages()]);
+                }
+                $validatedData = $validator->validated();
+                $company->update($validatedData);
+                return response()->json(['status'=> 200,'message' => 'company updated successfully',"company"=>$company]);
+            } else {
+                return response()->json(['status'=> 404,'message'=>'company not found']);
+            };
+        } catch (Exception $e) {
+            return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
+        }
+    }
 }
+
