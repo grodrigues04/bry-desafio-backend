@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     {
         #TODO:Search how to paginate this endpoint
         try {
-            $employees = Employee::all();
+            $employees= Employee::with('companies')->get();
             return response()->json($employees, 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error when try to list all employees'], 500);
@@ -32,7 +32,7 @@ class EmployeeController extends Controller
                 'password' => 'required|string',
                 'address' => 'required|string',
             ]);    
-            $employees = Employee::create([
+            $employee = Employee::create([
                 'name'=> $request->name,
                 'cpf'=> $request->cpf,
                 'email'=> $request->email,
@@ -40,7 +40,13 @@ class EmployeeController extends Controller
                 'password'=> $request->password,
                 'address'=> $request->address,
             ]);
-            if($employees){
+
+            if ($request->filled('company_id')) {
+                // The 'company' field is present and is not empty...
+                $employee->companies()->attach($request->company_id);
+            }
+
+            if($employee){
                 return response()->json(['message'=> 'Employee created successfully'],200);
             }
         } catch (Exception $e) {

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
+    protected $hidden = ['pivot'];
     protected $table = 'companies';
     protected $fillable = [
     'name',
@@ -14,6 +15,8 @@ class Company extends Model
     'address',
     ];  
     use HasFactory;
-
-    use HasFactory;
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_company', 'company_id', 'employee_id',);
+    }
 }

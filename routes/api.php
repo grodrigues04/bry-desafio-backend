@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\EmployeeController;
-use App\Models\Company;
+//use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -12,7 +12,7 @@ class CompanyController extends Controller
     public function list_companies() #READ
     {
         try {
-            $companies= Company::all();
+            $companies= Company::with('employees')->get();
             return response()->json($companies, 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error when try to list all companies'], 500);
@@ -40,6 +40,12 @@ class CompanyController extends Controller
                 'cnpj'=> $request->cnpj,
                 'address'=> $request->address,
             ]);
+
+            if ($request->filled('employee_id')) {
+                // The 'company' field is present and is not empty...
+                $company->employees()->attach($request->employee_id);
+            }
+
             if($company){
                 return response()->json(['message'=> 'Company created successfully'],200);
             }
