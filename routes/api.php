@@ -18,8 +18,8 @@ Route::patch('/employees/edit/{id}', [EmployeeController::class, 'employee_updat
 Route::delete('employees/delete/{id}',[EmployeeController::class,'employee_delete'])->name('');
 
 #Company
-
 Route::get('/companies', [CompanyController::class,'list_companies'])->name('');
 Route::post('/companies', [CompanyController::class,'create_company'])->name('');
 Route::get('/companies/{id}', [CompanyController::class,'company_id'])->name('');
 Route::patch('/companies/edit/{id}', [CompanyController::class, 'company_update'])->name('');
+Route::delete('/companies/delete/{id}', [CompanyController::class,'company_delete'])->name('');

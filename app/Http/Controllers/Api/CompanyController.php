@@ -85,5 +85,22 @@ class CompanyController extends Controller
             return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
         }
     }
+
+    public function company_delete($id){
+        try{
+            $company = Company::find($id);
+            if($company){
+                $company->delete();
+                return response()->json(['status'=> 200,'message'=> "company {$company->id} successfully deleted"]);
+            }
+            else{
+                return response()->json(['status'=> 404,'message'=> 'No company Found']);
+            }
+        }
+        catch(Exception $e) {
+            return response()->json(['status'=> 404,'message'=> 'Fail on try to delete']);
+        }
+
+    }
 }
 
