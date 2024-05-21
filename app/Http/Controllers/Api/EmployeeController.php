@@ -48,7 +48,7 @@ class EmployeeController extends Controller
         
         }
     }
-    public function employee_id($id){
+    public function employee_id(int $id){
         try{
             $employee = Employee::find($id);
             if($employee){
@@ -62,7 +62,7 @@ class EmployeeController extends Controller
         }
     }
 
-    public function employee_update(Request $request, int $id){
+    public function employee_update(Request $request, int $id){ #TODO Change commit mensagem of this functions
     try{
         $employee = Employee::find($id);
         if($employee){
@@ -86,5 +86,22 @@ class EmployeeController extends Controller
     } catch (Exception $e) {
         return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
     }
-}
+    }
+
+    public function employee_delete($id){
+        try{
+            $employee = Employee::find($id);
+            if($employee){
+                $employee->delete();
+                return response()->json(['status'=> 200,'message'=> "Employee {$employee->id} successfully deleted"]);
+            }
+            else{
+                return response()->json(['status'=> 404,'message'=> 'No employee Found']);
+            }
+        }
+        catch(Exception $e) {
+            return response()->json(['status'=> 404,'message'=> 'Fail on try to delete']);
+        }
+
+    }
 };
