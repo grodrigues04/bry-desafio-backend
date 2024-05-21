@@ -62,19 +62,29 @@ class EmployeeController extends Controller
         }
     }
 
-    public function employee_edit($id){
-        try{
-            $employee = Employee::find($id);
-            if($employee){
-                return response()->json(['status'=>200,'employee'=>$employee]);
-            } else {
-                return response()->json(['status'=> 404,'message'=>'employee not found']);
+    public function employee_update(Request $request, int $id){
+    try{
+        $employee = Employee::find($id);
+        if($employee){
+            $validator = Validator::make($request->all(),[  
+                'name' => 'string',
+                'cpf' => 'string|size:11',
+                'email' => 'email',
+                'login' => 'string',
+                'password' => 'string',
+                'address' => 'string',
+            ]);    
+            if ($validator->fails()) {
+                return response()->json(['status' => 422, 'message' => $validator->messages()]);
             }
-        }
-        catch(Exception $e) {
-            return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
-        }
+            $validatedData = $validator->validated();
+            $employee->update($validatedData);
+            return response()->json(['status'=> 200,'message' => 'Resource updated successfully',"employee"=>$employee]);
+        } else {
+            return response()->json(['status'=> 404,'message'=>'employee not found']);
+        };
+    } catch (Exception $e) {
+        return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
     }
 }
-    
-    
+};
