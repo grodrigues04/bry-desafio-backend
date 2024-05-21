@@ -20,4 +20,4 @@ Route::delete('employees/delete/{id}',[EmployeeController::class,'employee_delet
 #Company
 
 Route::get('/companies', [CompanyController::class,'list_companies'])->name('');
-Route::get('/companies', [CompanyController::class,'create_company'])->name('');
+Route::post('/companies', [CompanyController::class,'create_company'])->name('');
