@@ -20,6 +20,7 @@ class CompanyController extends Controller
     }
 
     public function create_company(Request $request) {
+        #cnpj validation
         for($i=0; $i < strlen($request->cnpj); $i++){
             if(!is_numeric($request->cnpj[$i])){
                 $request->cnpj = str_replace($request->cnpj[$i], '', $request->cnpj);
@@ -48,5 +49,18 @@ class CompanyController extends Controller
         }
     }
 
-
+    public function company_id(int $id){
+        try{
+            $company = Company::find($id);
+            if($company){
+                return response()->json(['status'=>200,'company'=>$company]);
+            } else {
+                return response()->json(['status'=> 404,'message'=>'company not found']);
+            }
+        }
+        catch(Exception $e) {
+            return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
+        }
+    }
+        
 }
