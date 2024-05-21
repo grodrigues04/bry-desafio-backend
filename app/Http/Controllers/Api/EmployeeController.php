@@ -44,7 +44,7 @@ class EmployeeController extends Controller
                 return response()->json(['message'=> 'Employee created successfully'],200);
             }
         } catch (Exception $e) {
-            return response()->json(['status'=>422,'message'=> $validator->messages()]);
+            return response()->json(['message'=> $validator->messages()],422);
         
         }
     }
@@ -52,13 +52,13 @@ class EmployeeController extends Controller
         try{
             $employee = Employee::find($id);
             if($employee){
-                return response()->json(['status'=>200,'employee'=>$employee]);
+                return response()->json(['employee'=>$employee],200);
             } else {
-                return response()->json(['status'=> 404,'message'=>'employee not found']);
+                return response()->json(['message'=>'Employee not found'],404);
             }
         }
         catch(Exception $e) {
-            return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
+            return response()->json(['message'=>'An error occurred while processing your request'],500);
         }
     }
 
@@ -75,16 +75,16 @@ class EmployeeController extends Controller
                 'address' => 'string',
             ]);    
             if ($validator->fails()) {
-                return response()->json(['status' => 422, 'message' => $validator->messages()]);
+                return response()->json(['message' => $validator->messages()],422);
             }
             $validatedData = $validator->validated();
             $employee->update($validatedData);
-            return response()->json(['status'=> 200,'message' => 'employee updated successfully',"employee"=>$employee]);
+            return response()->json(['message' => 'employee updated successfully',"employee"=>$employee],200);
         } else {
-            return response()->json(['status'=> 404,'message'=>'employee not found']);
+            return response()->json(['message'=>'employee not found'],404);
         };
     } catch (Exception $e) {
-        return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
+        return response()->json(['message'=> 'Fail on try to update'],404);
     }
     }
 
@@ -93,14 +93,14 @@ class EmployeeController extends Controller
             $employee = Employee::find($id);
             if($employee){
                 $employee->delete();
-                return response()->json(['status'=> 200,'message'=> "Employee {$employee->id} successfully deleted"]);
+                return response()->json(['message'=> "Employee {$employee->id} successfully deleted"],200);
             }
             else{
-                return response()->json(['status'=> 404,'message'=> 'No employee Found']);
+                return response()->json(['message'=> 'No employee Found'],404);
             }
         }
         catch(Exception $e) {
-            return response()->json(['status'=> 404,'message'=> 'Fail on try to delete']);
+            return response()->json(['message'=> 'Fail on try to delete'],404);
         }
 
     }

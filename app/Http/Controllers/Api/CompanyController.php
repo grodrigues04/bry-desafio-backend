@@ -45,7 +45,7 @@ class CompanyController extends Controller
             }
         }
         catch (Exception $e) {
-            return response()->json(['status'=>422,'message'=> $validator->messages()]);
+            return response()->json([$validator->messages()],422);
         }
     }
 
@@ -53,13 +53,13 @@ class CompanyController extends Controller
         try{
             $company = Company::find($id);
             if($company){
-                return response()->json(['status'=>200,'company'=>$company]);
+                return response()->json(['company'=>$company],200);
             } else {
-                return response()->json(['status'=> 404,'message'=>'company not found']);
+                return response()->json(['message'=> 'company not found'],404);
             }
         }
         catch(Exception $e) {
-            return response()->json(['status'=> 500,'message'=>'An error occurred while processing your request']);
+            return response()->json(['message'=> 'An error occurred while processing your request'],500);
         }
     }
 
@@ -73,16 +73,16 @@ class CompanyController extends Controller
                     'address' => 'sometimes|string'
                 ]);    
                 if ($validator->fails()) {
-                    return response()->json(['status' => 422, 'message' => $validator->messages()]);
+                    return response()->json(['message' => $validator->messages()],422);
                 }
                 $validatedData = $validator->validated();
                 $company->update($validatedData);
-                return response()->json(['status'=> 200,'message' => 'company updated successfully',"company"=>$company]);
+                return response()->json(['message' => 'company updated successfully',"company"=>$company],200);
             } else {
-                return response()->json(['status'=> 404,'message'=>'company not found']);
+                return response()->json(['message'=> 'company not found'],404);
             };
         } catch (Exception $e) {
-            return response()->json(['status'=> 404,'message'=> 'Fail on try to update']);
+            return response()->json(['message'=> 'Fail on try to update'],404);
         }
     }
 
@@ -91,14 +91,14 @@ class CompanyController extends Controller
             $company = Company::find($id);
             if($company){
                 $company->delete();
-                return response()->json(['status'=> 200,'message'=> "company {$company->id} successfully deleted"]);
+                return response()->json(['message'=> "company {$company->id} successfully deleted"],200);
             }
             else{
-                return response()->json(['status'=> 404,'message'=> 'No company Found']);
+                return response()->json(['message'=> 'No company Found'],404);
             }
         }
         catch(Exception $e) {
-            return response()->json(['status'=> 404,'message'=> 'Fail on try to delete']);
+            return response()->json(['message'=> 'Fail on try to delete'],404);
         }
 
     }
