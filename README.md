@@ -1,5 +1,5 @@
 <h4>Desafio full stack para o processo seletivo Bry</h4>
-Para o desafio, foi usado a versão 11.7.0 do framework Laravel
+Para o desafio, foi usado a versão 11.7.0 do framework Laravel.
 No projeto, as rotas são definidas em routes/api.php, que utilizam os métodos GET, POST, PATCH, DELETE.Cada rota, tem sua função e endpoint atribuido, que é manipulado pelos arquivos EmployeeController.php e CompanyController.php, que está Dentro da pasta API => app/Http/Controllers/Api.
 
 Dentro de cada controller, temos a importação de seus Models para que as classes sejam usadas e seja possível interagir com o banco de dados usando modelos Eloquent no Laravel.
