@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Employee;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class EmployeeController extends Controller
 {
@@ -31,7 +33,13 @@ class EmployeeController extends Controller
                 'login' => 'required|string',
                 'password' => 'required|string',
                 'address' => 'required|string',
-            ]);    
+                'company_id' => 'required|int'
+            ]);   
+
+            if($validator->fails()){
+                return response()->json(['message'=> $validator->messages()],422);
+            }
+        
             $employee = Employee::create([
                 'name'=> $request->name,
                 'cpf'=> $request->cpf,
@@ -40,23 +48,26 @@ class EmployeeController extends Controller
                 'password'=> $request->password,
                 'address'=> $request->address,
             ]);
-
+            // The 'company' field is present and is not empty...
             if ($request->filled('company_id')) {
-                // The 'company' field is present and is not empty...
-                $employee->companies()->attach($request->company_id);
+                $company = Company::find($request->company_id);
+                if ($company){
+                    $employee->companies()->attach($request->company_id);
+                }
             }
+
 
             if($employee){
                 return response()->json(['message'=> 'Employee created successfully'],200);
             }
-        } catch (Exception $e) {
-            return response()->json(['message'=> $validator->messages()],422);
-        
+        }
+        catch (Exception $e) {
+            return response()->json(['message'=> 'An error occurred while processing your request'],500);
         }
     }
     public function employee_id(int $id){
         try{
-            $employee = Employee::find($id);
+            $employee = Employee::with('companies')->find($id);
             if($employee){
                 return response()->json(['employee'=>$employee],200);
             } else {
@@ -70,7 +81,7 @@ class EmployeeController extends Controller
 
     public function employee_update(Request $request, int $id){ #TODO Change commit mensagem of this functions
     try{
-        $employee = Employee::find($id);
+        $employee = Employee::with('companies')->find($id);
         if($employee){
             $validator = Validator::make($request->all(),[  
                 'name' => 'string',
@@ -79,18 +90,29 @@ class EmployeeController extends Controller
                 'login' => 'string',
                 'password' => 'string',
                 'address' => 'string',
+                'company_id'=>'array'
             ]);    
             if ($validator->fails()) {
                 return response()->json(['message' => $validator->messages()],422);
             }
             $validatedData = $validator->validated();
             $employee->update($validatedData);
+            
+            if ($request->filled('company_id')) {
+                foreach ($request->company_id as $id) {
+                    $company = Company::find($id);
+                    if ($company){
+                        $employee->companies()->attach($id);
+                    }
+                }
+            }
+            $employee->refresh();
             return response()->json(['message' => 'employee updated successfully',"employee"=>$employee],200);
         } else {
             return response()->json(['message'=>'employee not found'],404);
         };
     } catch (Exception $e) {
-        return response()->json(['message'=> 'Fail on try to update'],404);
+        return response()->json(['message'=> 'Fail on try to update','erro'=>$request->company_id],500);
     }
     }
 
@@ -106,7 +128,7 @@ class EmployeeController extends Controller
             }
         }
         catch(Exception $e) {
-            return response()->json(['message'=> 'Fail on try to delete'],404);
+            return response()->json(['message'=> 'Fail on try to delete'],500);
         }
 
     }

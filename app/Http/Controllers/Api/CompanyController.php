@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
 use Exception;
 class CompanyController extends Controller
 {
@@ -20,30 +21,27 @@ class CompanyController extends Controller
     }
 
     public function create_company(Request $request) {
-        #cnpj validation
-        for($i=0; $i < strlen($request->cnpj); $i++){
-            if(!is_numeric($request->cnpj[$i])){
-                $request->cnpj = str_replace($request->cnpj[$i], '', $request->cnpj);
-            }
-        };
-        if (strlen($request->cnpj)!==14){
-            return response()->json(['message'=> 'invalid cnpj'],422);
-        }
+       
         try {
             $validator = Validator::make($request->all(),[  
                 'name' => 'required|string',
                 'cnpj' => 'required|string',                                 
-                'address' => 'required|string',]);
+                'address' => 'required|string',
+                'employee_id' => 'int'
+            ]);
            
             $company=Company::create([
                 'name'=> $request->name,
                 'cnpj'=> $request->cnpj,
                 'address'=> $request->address,
             ]);
-
+            
+            // The 'employee' field is present and is not empty...       
             if ($request->filled('employee_id')) {
-                // The 'company' field is present and is not empty...
-                $company->employees()->attach($request->employee_id);
+                $employee = Company::find($request->employee_id);
+                if ($employee){
+                    $company->companies()->attach($request->employee_id);
+                }
             }
 
             if($company){
@@ -77,12 +75,21 @@ class CompanyController extends Controller
                     'name' => 'sometimes|string',
                     'cnpj' => 'sometimes|string',
                     'address' => 'sometimes|string'
+
                 ]);    
                 if ($validator->fails()) {
                     return response()->json(['message' => $validator->messages()],422);
                 }
                 $validatedData = $validator->validated();
                 $company->update($validatedData);
+                if ($request->filled('employee_id')) {
+                    foreach ($request->employee_id as $id) {
+                        $employee = Company::find($id);
+                        if ($employee){
+                            $employee->companies()->attach($id);
+                        }
+                    }
+                }
                 return response()->json(['message' => 'company updated successfully',"company"=>$company],200);
             } else {
                 return response()->json(['message'=> 'company not found'],404);
